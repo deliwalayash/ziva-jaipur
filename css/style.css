@@ -546,17 +546,28 @@ img {
 .service-badge-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin-top: auto;
+  padding-top: 14px;
 }
 
 .service-badge-list span {
-  font-size: 0.76rem;
-  background: #f1f5f9;
-  color: #475569;
-  padding: 3px 8px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
+  font-size: 0.82rem;
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.service-badge-list span i {
+  color: #16a34a;
+  font-size: 0.75rem;
 }
 
 /* ==========================================================================
@@ -1063,6 +1074,17 @@ img {
   }
   .top-bar {
     display: none;
+  }
+  .navbar-brand-logo {
+    height: 46px;
+    max-width: 220px;
+  }
+  .floating-whatsapp {
+    bottom: 70px;
+    right: 15px;
+    width: 48px;
+    height: 48px;
+    font-size: 26px;
   }
 }
 
