@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 95" width="100%" height="100%">
+  <defs>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b4f9c" />
+      <stop offset="100%" stop-color="#073467" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7a00" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+    <filter id="dropGlow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0b4f9c" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Left Icon Group -->
+  <g transform="translate(10, 8)" filter="url(#dropGlow)">
+    <!-- Speed Wings Behind -->
+    <path d="M48,15 Q75,10 82,32 Q65,26 42,32 Z" fill="url(#orangeGrad)" opacity="0.9" />
+    <path d="M44,28 Q78,22 84,48 Q62,40 38,44 Z" fill="url(#orangeGrad)" />
+    
+    <!-- Curved Speed Arrow Top -->
+    <path d="M12,46 C12,24 32,10 54,8 L50,2 L66,12 L52,22 L52,14 C35,16 20,28 20,46 Z" fill="url(#orangeGrad)" />
+    
+    <!-- 3D Box Main -->
+    <!-- Top Face -->
+    <polygon points="36,25 58,16 78,25 56,35" fill="#2563eb" />
+    <polygon points="46,21 58,16 68,21 56,26" fill="#60a5fa" />
+    
+    <!-- Left Face -->
+    <polygon points="36,25 56,35 56,66 36,54" fill="url(#boxGrad)" />
+    
+    <!-- Right Face -->
+    <polygon points="56,35 78,25 78,54 56,66" fill="#093d77" />
+    
+    <!-- Tape / Package details -->
+    <polygon points="44,29 48,31 48,61 44,59" fill="#93c5fd" opacity="0.8" />
+    
+    <!-- Bottom Swoosh Arrow -->
+    <path d="M22,50 C26,70 52,78 72,66 L70,72 L85,62 L74,52 L73,58 C56,68 34,62 30,50 Z" fill="url(#orangeGrad)" />
+  </g>
+
+  <!-- Brand Typography -->
+  <!-- Main Title -->
+  <text x="110" y="52" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="900" font-size="38" fill="#072a53" letter-spacing="-0.5">
+    ZIVA <tspan fill="#ff6a00">COURIER</tspan>
+  </text>
+  
+  <!-- Subtitle Tagline -->
+  <text x="112" y="74" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="800" font-size="12" fill="#0284c7" letter-spacing="3.2" text-transform="uppercase">
+    INTERNATIONAL CARGO &amp; EXPRESS
+  </text>
+</svg>

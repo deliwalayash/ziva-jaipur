@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="favBox" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b4f9c" />
+      <stop offset="100%" stop-color="#072a53" />
+    </linearGradient>
+    <linearGradient id="favOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7a00" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="64" height="64" rx="14" fill="#ffffff" />
+  
+  <!-- Speed Wings -->
+  <path d="M36,12 Q56,8 60,24 Q48,20 32,24 Z" fill="url(#favOrange)" />
+  <path d="M34,22 Q58,18 62,38 Q46,32 28,34 Z" fill="url(#favOrange)" />
+  
+  <!-- 3D Box -->
+  <polygon points="24,19 40,12 54,19 38,27" fill="#3b82f6" />
+  <polygon points="24,19 38,27 38,50 24,40" fill="url(#favBox)" />
+  <polygon points="38,27 54,19 54,40 38,50" fill="#093d77" />
+  
+  <!-- Tape -->
+  <polygon points="29,22 33,24 33,46 29,44" fill="#93c5fd" />
+  
+  <!-- Curved Speed Arrow -->
+  <path d="M12,38 C15,54 36,60 52,50 L50,55 L62,48 L54,39 L53,44 C39,52 22,47 18,38 Z" fill="url(#favOrange)" />
+</svg>
