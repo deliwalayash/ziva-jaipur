@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="boxGradFront" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d4a373" />
+      <stop offset="100%" stop-color="#b07d4b" />
+    </linearGradient>
+    <linearGradient id="boxGradSide" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c59260" />
+      <stop offset="100%" stop-color="#a06e3d" />
+    </linearGradient>
+    <linearGradient id="boxGradTop" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8bf96" />
+      <stop offset="100%" stop-color="#d4a373" />
+    </linearGradient>
+    <linearGradient id="flapGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#deb489" />
+      <stop offset="100%" stop-color="#c59260" />
+    </linearGradient>
+    <linearGradient id="tubeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b07d4b" />
+      <stop offset="30%" stop-color="#dfb78c" />
+      <stop offset="70%" stop-color="#d2a272" />
+      <stop offset="100%" stop-color="#9a6938" />
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="8" stdDeviation="6" flood-opacity="0.18" flood-color="#000" />
+    </filter>
+  </defs>
+
+  <!-- Ground Shadows -->
+  <ellipse cx="200" cy="390" rx="90" ry="18" fill="rgba(0,0,0,0.08)" />
+  <ellipse cx="460" cy="400" rx="180" ry="24" fill="rgba(0,0,0,0.12)" />
+
+  <!-- Cylindrical Tube (Left) -->
+  <g filter="url(#softShadow)">
+    <!-- Tube Body -->
+    <path d="M 140 120 L 140 370 A 50 14 0 0 0 240 370 L 240 120 Z" fill="url(#tubeGrad)" />
+    <!-- Tube Bottom Rim -->
+    <ellipse cx="190" cy="370" rx="50" ry="14" fill="#a06e3d" />
+    <!-- Tube Inner Top -->
+    <ellipse cx="190" cy="120" rx="50" ry="14" fill="#deb489" stroke="#9a6938" stroke-width="2" />
+    <ellipse cx="190" cy="120" rx="42" ry="11" fill="#4a2e16" opacity="0.85" />
+    <ellipse cx="190" cy="120" rx="36" ry="9" fill="#2d1a0b" />
+  </g>
+
+  <!-- Tube Height Label Arrow -->
+  <line x1="120" y1="120" x2="120" y2="370" stroke="#777" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polyline points="116,128 120,120 124,128" fill="none" stroke="#777" stroke-width="1.5" />
+  <polyline points="116,362 120,370 124,362" fill="none" stroke="#777" stroke-width="1.5" />
+  <text x="110" y="250" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" fill="#555" text-anchor="middle" transform="rotate(-90 110 250)">Height</text>
+
+  <!-- Tube Top Length Marker -->
+  <line x1="140" y1="95" x2="240" y2="95" stroke="#777" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polyline points="148,91 140,95 148,99" fill="none" stroke="#777" stroke-width="1.5" />
+  <polyline points="232,91 240,95 232,99" fill="none" stroke="#777" stroke-width="1.5" />
+  <text x="190" y="85" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" fill="#555" text-anchor="middle">Length</text>
+
+  <!-- 3D Cardboard Box (Right) -->
+  <g filter="url(#softShadow)">
+    <!-- Box Left / Front Perspective -->
+    <polygon points="260,220 450,260 450,410 260,360" fill="url(#boxGradFront)" stroke="#a06e3d" stroke-width="1" />
+    <!-- Box Right Perspective -->
+    <polygon points="450,260 610,210 610,350 450,410" fill="url(#boxGradSide)" stroke="#8c5828" stroke-width="1" />
+    
+    <!-- Open Flaps -->
+    <!-- Front Left Flap -->
+    <polygon points="260,220 230,170 410,200 450,260" fill="url(#flapGrad)" stroke="#b07d4b" stroke-width="1" />
+    <!-- Front Right Flap -->
+    <polygon points="450,260 490,200 640,160 610,210" fill="url(#flapGrad)" stroke="#9a6938" stroke-width="1" />
+    <!-- Back Left Flap -->
+    <polygon points="260,220 310,140 460,160 420,230" fill="url(#boxGradTop)" opacity="0.9" stroke="#b07d4b" stroke-width="1" />
+    <!-- Back Right Flap -->
+    <polygon points="420,230 460,160 590,140 610,210" fill="#a06e3d" opacity="0.9" stroke="#7d4e20" stroke-width="1" />
+
+    <!-- Box Tape & Seam Details -->
+    <line x1="450" y1="260" x2="450" y2="410" stroke="#8c5828" stroke-width="2" opacity="0.4" />
+    <line x1="260" y1="360" x2="450" y2="410" stroke="#7d4e20" stroke-width="1.5" opacity="0.3" />
+    <line x1="450" y1="410" x2="610" y2="350" stroke="#5a3512" stroke-width="1.5" opacity="0.3" />
+  </g>
+
+  <!-- Dimension Arrows for Box -->
+  <!-- Length (Front Bottom) -->
+  <line x1="250" y1="375" x2="440" y2="425" stroke="#777" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polyline points="256,370 250,375 258,382" fill="none" stroke="#777" stroke-width="1.5" />
+  <polyline points="432,418 440,425 434,430" fill="none" stroke="#777" stroke-width="1.5" />
+
+  <!-- Width (Side Top / Angle) -->
+  <line x1="460" y1="422" x2="615" y2="362" stroke="#777" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polyline points="468,423 460,422 466,415" fill="none" stroke="#777" stroke-width="1.5" />
+  <polyline points="608,368 615,362 607,360" fill="none" stroke="#777" stroke-width="1.5" />
+
+  <!-- Height (Right Vertical) -->
+  <line x1="625" y1="210" x2="625" y2="350" stroke="#777" stroke-width="1.5" stroke-dasharray="3,3" />
+  <polyline points="621,218 625,210 629,218" fill="none" stroke="#777" stroke-width="1.5" />
+  <polyline points="621,342 625,350 629,342" fill="none" stroke="#777" stroke-width="1.5" />
+
+  <!-- Circular Dimension Badges (Yellow / Amber Circles matching reference image) -->
+  <!-- Length Circle -->
+  <g filter="url(#softShadow)">
+    <circle cx="340" cy="330" r="30" fill="#f59e0b" stroke="#ffffff" stroke-width="3" />
+    <text x="340" y="335" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="13" fill="#ffffff" text-anchor="middle">Length</text>
+  </g>
+
+  <!-- Width Circle -->
+  <g filter="url(#softShadow)">
+    <circle cx="460" cy="130" r="30" fill="#f59e0b" stroke="#ffffff" stroke-width="3" />
+    <text x="460" y="135" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="13" fill="#ffffff" text-anchor="middle">Width</text>
+  </g>
+
+  <!-- Height Circle -->
+  <g filter="url(#softShadow)">
+    <circle cx="560" cy="235" r="30" fill="#f59e0b" stroke="#ffffff" stroke-width="3" />
+    <text x="560" y="240" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="13" fill="#ffffff" text-anchor="middle">Height</text>
+  </g>
+</svg>

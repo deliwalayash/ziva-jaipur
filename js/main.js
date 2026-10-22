@@ -1,5 +1,5 @@
 /**
- * Ziva Courier & Cargo - Main JavaScript
+ * Ziva Courier Service - Main JavaScript
  * Handles rates filtering, quote calculation, and interactive modal/booking forms.
  */
 
@@ -220,7 +220,279 @@ function openQuoteModal(countryName, baseRate = 0) {
   }
 }
 
-// Calculate rate estimation
+// Domestic Destinations Data
+const domesticDestinations = [
+  { city: "Delhi NCR (Express Next Day)", rate: 90 },
+  { city: "Mumbai / Maharashtra", rate: 120 },
+  { city: "Bangalore / Karnataka", rate: 140 },
+  { city: "Hyderabad / Telangana", rate: 130 },
+  { city: "Chennai / Tamil Nadu", rate: 140 },
+  { city: "Kolkata / West Bengal", rate: 150 },
+  { city: "Ahmedabad / Gujarat", rate: 100 },
+  { city: "Pune / Maharashtra", rate: 120 },
+  { city: "All India Standard Doorstep", rate: 110 }
+];
+
+// Switch Quote Mode between International & Domestic
+let currentShipmentMode = "international";
+
+let internationalHtmlCache = "";
+
+function setShipmentMode(mode) {
+  currentShipmentMode = mode;
+  const intlRadio = document.getElementById("tabIntlRadio");
+  const domRadio = document.getElementById("tabDomRadio");
+  const intlBtn = document.getElementById("tabIntlBtn");
+  const domBtn = document.getElementById("tabDomBtn");
+  const labelTo = document.getElementById("toDestLabel");
+  const selectTo = document.getElementById("heroDestinationSelect");
+  const quoteTitle = document.getElementById("quoteHeaderTitle");
+
+  if (selectTo && !internationalHtmlCache) {
+    internationalHtmlCache = selectTo.innerHTML;
+  }
+
+  if (intlRadio && domRadio && intlBtn && domBtn) {
+    if (mode === "domestic") {
+      intlRadio.checked = false;
+      domRadio.checked = true;
+      intlBtn.classList.remove("active");
+      domBtn.classList.add("active");
+      if (labelTo) labelTo.textContent = "To State / City (Domestic)";
+      if (quoteTitle) quoteTitle.textContent = "Send Courier from Jaipur across India";
+      
+      // Populate domestic destinations
+      if (selectTo) {
+        selectTo.innerHTML = `<option value="" selected disabled>Select Domestic Destination</option>`;
+        domesticDestinations.forEach(d => {
+          selectTo.innerHTML += `<option value="${d.city}" data-rate="${d.rate}">${d.city} (From ₹${d.rate}/kg)</option>`;
+        });
+      }
+    } else {
+      intlRadio.checked = true;
+      domRadio.checked = false;
+      intlBtn.classList.add("active");
+      domBtn.classList.remove("active");
+      if (labelTo) labelTo.textContent = "To Country";
+      if (quoteTitle) quoteTitle.textContent = "Send Courier from Jaipur to Worldwide";
+      
+      // Restore full international destinations with Popular + A-Z optgroups
+      if (selectTo && internationalHtmlCache) {
+        selectTo.innerHTML = internationalHtmlCache;
+      }
+    }
+  }
+}
+
+// Volumetric Weight Calculator (Standard formula: L x W x H / 5000)
+function calculateVolumetric() {
+  const widthEl = document.getElementById("volWidth");
+  const lengthEl = document.getElementById("volLength");
+  const heightEl = document.getElementById("volHeight");
+  const resultDisplay = document.getElementById("volResultDisplay");
+
+  const w = parseFloat(widthEl ? widthEl.value : 0) || 0;
+  const l = parseFloat(lengthEl ? lengthEl.value : 0) || 0;
+  const h = parseFloat(heightEl ? heightEl.value : 0) || 0;
+
+  if (w <= 0 || l <= 0 || h <= 0) {
+    if (resultDisplay) {
+      resultDisplay.innerHTML = `<span class="text-danger fw-bold">Please enter positive values for Width, Length, and Height (in cm).</span>`;
+    }
+    return;
+  }
+
+  const volumeCm3 = (l * w * h);
+  const volWeight = (volumeCm3 / 5000);
+  const formattedWeight = volWeight.toFixed(2);
+
+  if (resultDisplay) {
+    resultDisplay.innerHTML = `
+      <div class="volumetric-result-title">
+        <i class="fa-solid fa-box-open me-2"></i> Volumetric Weight: <strong>${formattedWeight} kg</strong>
+      </div>
+      <div class="volumetric-formula-tag mt-2">
+        <span>Volume: ${volumeCm3.toLocaleString()} cm³</span> | 
+        <span>Formula: (${l} × ${w} × ${h}) ÷ 5000</span>
+      </div>
+      <p class="small text-muted mt-2 mb-3">
+        *Courier charge is calculated on whichever is higher: Actual Gross Weight vs Volumetric Weight (${formattedWeight} kg).
+      </p>
+      <button type="button" class="btn btn-sm btn-primary-custom" onclick="applyVolumetricWeightToHero(${formattedWeight})">
+        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Apply ${formattedWeight} Kg to Rate Calculator
+      </button>
+    `;
+  }
+}
+
+// Transfer calculated volumetric weight to hero form & scroll
+function applyVolumetricWeightToHero(weightKg) {
+  const heroWeightSelect = document.getElementById("heroWeightSelect");
+  const heroWeightInput = document.getElementById("heroWeightInput");
+  
+  if (heroWeightSelect) {
+    let closestOpt = heroWeightSelect.options[1];
+    for (let i = 1; i < heroWeightSelect.options.length; i++) {
+      const optVal = parseFloat(heroWeightSelect.options[i].value);
+      if (optVal >= weightKg) {
+        closestOpt = heroWeightSelect.options[i];
+        break;
+      }
+      closestOpt = heroWeightSelect.options[i];
+    }
+    if (closestOpt) {
+      heroWeightSelect.value = closestOpt.value;
+    }
+    heroWeightSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    heroWeightSelect.focus();
+    heroWeightSelect.style.backgroundColor = '#fef3c7';
+    setTimeout(() => { heroWeightSelect.style.backgroundColor = ''; }, 2000);
+  } else if (heroWeightInput) {
+    heroWeightInput.value = weightKg;
+    heroWeightInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    heroWeightInput.focus();
+    heroWeightInput.style.backgroundColor = '#fef3c7';
+    setTimeout(() => { heroWeightInput.style.backgroundColor = ''; }, 2000);
+  }
+}
+
+// Instant Corporate Hero Rate Calculator & WhatsApp Direct Connect
+function calculateHeroCourierCharges(event) {
+  if (event) event.preventDefault();
+  
+  const form = document.getElementById("corporateHeroForm");
+  if (!form) return;
+
+  const destSelect = document.getElementById("heroDestinationSelect");
+  const selectedOption = destSelect ? destSelect.options[destSelect.selectedIndex] : null;
+  const destination = selectedOption && selectedOption.value ? selectedOption.value : "";
+  
+  const weightSelect = document.getElementById("heroWeightSelect");
+  const weightInput = document.getElementById("heroWeightInput");
+  const weight = parseFloat((weightSelect ? weightSelect.value : weightInput?.value) || 0);
+  const selectedWeightOpt = weightSelect && weightSelect.selectedIndex > 0 ? weightSelect.options[weightSelect.selectedIndex] : null;
+  const weightLabel = selectedWeightOpt ? selectedWeightOpt.text : `${weight} Kg`;
+  
+  const packageType = form.querySelector('[name="packageType"]')?.value || "Non-Documents / Parcel";
+  const mobileInput = form.querySelector('[name="phone"]');
+  const mobile = mobileInput ? mobileInput.value.trim() : "";
+  const countryCode = form.querySelector('[name="countryCode"]')?.value || "+91";
+  const outputBox = document.getElementById("heroQuoteOutput");
+
+  // Validation
+  if (!destination) {
+    alert("Please select a destination country/state from the list.");
+    if (destSelect) destSelect.focus();
+    return;
+  }
+
+  if (!weight || weight <= 0) {
+    alert("Please select shipment weight from the list.");
+    if (weightSelect) weightSelect.focus();
+    return;
+  }
+
+  if (!mobile) {
+    alert("Please enter your 10-digit mobile number.");
+    if (mobileInput) mobileInput.focus();
+    return;
+  }
+
+  let baseRate = 0;
+  if (currentShipmentMode === "domestic") {
+    const domObj = domesticDestinations.find(d => d.city === destination);
+    baseRate = domObj ? domObj.rate : 110;
+  } else {
+    const intlObj = rateCardData.find(c => c.country.toUpperCase() === destination.toUpperCase());
+    const dataRate = selectedOption ? parseFloat(selectedOption.getAttribute("data-rate")) : 0;
+    baseRate = intlObj ? intlObj.rate : (dataRate || 750);
+  }
+
+  // Calculate tier pricing
+  let totalCost = 0;
+  let discountUnlocked = false;
+  let discountAmount = 0;
+
+  if (currentShipmentMode === "domestic") {
+    totalCost = Math.max(weight * baseRate, 350);
+    if (weight >= 10) {
+      discountUnlocked = true;
+      discountAmount = 299;
+    }
+  } else {
+    if (weight >= 50) {
+      totalCost = weight * baseRate;
+    } else if (weight >= 20) {
+      totalCost = weight * Math.round(baseRate * 1.15);
+    } else {
+      totalCost = Math.max(weight * Math.round(baseRate * 1.35), 2200);
+    }
+    if (weight >= 10) {
+      discountUnlocked = true;
+      discountAmount = 499;
+    }
+  }
+
+  const finalPayable = Math.max(totalCost - discountAmount, 0);
+  const modeLabel = currentShipmentMode === "domestic" ? "Domestic (Within India)" : "International (Worldwide)";
+  const discountNote = discountUnlocked ? ` (₹${discountAmount} Instant Booking Discount Applied)` : "";
+
+  // Prepare full WhatsApp inquiry message with all typed details
+  const waMessage = 
+`*New Courier Rate & Booking Request - Ziva Courier*
+━━━━━━━━━━━━━━━━━━━━━
+📍 *Mode:* ${modeLabel}
+🌍 *Destination:* ${destination}
+📦 *Package Type:* ${packageType}
+⚖️ *Weight:* ${weightLabel} (${weight} Kg)
+📱 *Customer Mobile:* ${countryCode} ${mobile}
+💰 *Estimated Charges:* ₹${finalPayable.toLocaleString('en-IN')}*${discountNote}
+━━━━━━━━━━━━━━━━━━━━━
+*Pickup Location:* Jaipur / Rajasthan (Free 7-Layer Packing included)
+Please confirm rate quote and pickup schedule.`;
+
+  const waUrl = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(waMessage)}`;
+
+  // Update on-page quote output box
+  if (outputBox) {
+    outputBox.classList.remove("d-none");
+    outputBox.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge bg-success">${currentShipmentMode.toUpperCase()}: ${destination}</span>
+        <span class="text-muted small">${weight} Kg (${packageType})</span>
+      </div>
+      <div class="price-badge mb-1">
+        ₹${finalPayable.toLocaleString('en-IN')}* 
+        ${discountUnlocked ? `<small class="text-danger text-decoration-line-through fs-6 ms-1">₹${totalCost.toLocaleString('en-IN')}</small>` : ''}
+      </div>
+      ${discountUnlocked ? `<div class="small text-success fw-bold"><i class="fa-solid fa-gift"></i> ₹${discountAmount} Instant Booking Discount Applied!</div>` : `<div class="small text-muted"><i class="fa-solid fa-circle-info text-primary"></i> Tip: Send 10kg+ to unlock instant ₹${currentShipmentMode === 'domestic' ? '299' : '499'} off!</div>`}
+      <div class="small text-muted mt-1">*Includes Free Doorstep Pickup & 7-Layer Packing in Jaipur.</div>
+      <div class="alert alert-success py-2 px-3 mt-3 mb-2 small d-flex align-items-center gap-2">
+        <i class="fa-brands fa-whatsapp fs-5 text-success"></i>
+        <div>
+          <strong>Redirecting to WhatsApp (+91 7300030628)...</strong><br>
+          <span class="text-muted">Connecting your inquiry directly with all entered details.</span>
+        </div>
+      </div>
+      <div class="mt-2 d-flex gap-2">
+        <a href="${waUrl}" 
+           target="_blank" class="btn btn-sm btn-corp-green flex-grow-1">
+           <i class="fa-brands fa-whatsapp me-1"></i> Continue on WhatsApp
+        </a>
+      </div>
+    `;
+    outputBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Redirect to WhatsApp immediately with all details
+  const waWin = window.open(waUrl, '_blank');
+  if (!waWin || waWin.closed || typeof waWin.closed === 'undefined') {
+    // Fallback if popup blocker intercepted new window
+    window.location.href = waUrl;
+  }
+}
+
+// Calculate rate estimation for rate page
 function calculateEstimate() {
   const country = document.getElementById("calcCountry") ? document.getElementById("calcCountry").value : "";
   const weight = parseFloat(document.getElementById("calcWeight") ? document.getElementById("calcWeight").value : 0);
@@ -250,7 +522,7 @@ function calculateEstimate() {
     pricingNote = `Standard Air Tier (₹${mediumTierRate}/Kg for 20-49 Kg)`;
   } else {
     const retailTierRate = Math.round(ratePerKg * 1.35);
-    estimatedTotal = Math.max(weight * retailTierRate, 2200); // Minimum parcel charge
+    estimatedTotal = Math.max(weight * retailTierRate, 2200);
     pricingNote = `Express Courier Tier (Min booking charges apply)`;
   }
 
@@ -258,7 +530,7 @@ function calculateEstimate() {
     resultDiv.classList.remove("d-none");
     resultDiv.innerHTML = `
       <div class="calc-result-box">
-        <span class="badge bg-primary mb-2">${country.toUpperCase()} EXPRESS CARGO</span>
+        <span class="badge bg-primary mb-2">${country.toUpperCase()} EXPRESS COURIER</span>
         <div class="text-muted small">Estimated Door-to-Door Shipping Cost:</div>
         <div class="estimated-price">₹${estimatedTotal.toLocaleString('en-IN')}*</div>
         <div class="small text-secondary fw-semibold mt-1"><i class="fa-solid fa-circle-check text-success"></i> ${pricingNote}</div>
@@ -331,9 +603,34 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Setup Domestic / International radio tab listeners
+  const intlRadio = document.getElementById("tabIntlRadio");
+  const domRadio = document.getElementById("tabDomRadio");
+  if (intlRadio) {
+    intlRadio.addEventListener("change", () => setShipmentMode("international"));
+  }
+  if (domRadio) {
+    domRadio.addEventListener("change", () => setShipmentMode("domestic"));
+  }
+
+  // Setup Hero Corporate Form
+  const corpForm = document.getElementById("corporateHeroForm");
+  if (corpForm) {
+    corpForm.addEventListener("submit", calculateHeroCourierCharges);
+  }
+
+  // Volumetric inputs live calculator
+  ["volWidth", "volLength", "volHeight"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", calculateVolumetric);
+    }
+  });
+
   // Attach inquiry handlers
   handleInquiryForm("heroQuoteForm");
   handleInquiryForm("modalQuoteForm");
   handleInquiryForm("contactPageForm");
   handleInquiryForm("ratesQuoteForm");
 });
+
